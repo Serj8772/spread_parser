@@ -46,68 +46,67 @@ def load_tables_to_list(tables):
             connection.close()
 
 
+def compare_tables(tables_lists):
+    pairs = []
+    duplicates = []
+    seen = []
 
-tables_lists = load_tables_to_list(tables)
-pair_list = tables_lists[0]+tables_lists[1]+tables_lists[2]
+    # # добавляем все названия пар в список
+    for i in tables_lists:
+        for pair in i:
+            pairs.append(pair[0])
+    print(pairs)
 
-pairs = []
-duplicates = []
-seen = []
+    # ищем повторяющиеся пары и добавляем их в список дубликатов
+    for item in pairs:
+        if item in seen and item not in duplicates:
+            duplicates.append(item)
+        elif item not in seen:
+            seen.append(item)
 
-for i in pair_list:
-    pairs.append(i[0])
+    duplicates_lists = []
+    # добавляем пары в список списков дубликатов для каждой таблицы
+    for table_index, table in enumerate(tables_lists):
+        duplicates_lists.append([])
+        for row in table:
+            if row[0] in duplicates:
+                duplicates_lists[table_index].append(row)
 
-for item in pairs:
-    if item in seen and item not in duplicates:
-        duplicates.append(item)
-    elif item not in seen:
-        seen.append(item)
+    pairwise_results = []
+    # Перебираем все пары списков
+    for i in range(len(duplicates_lists)):
+        for j in range(i + 1, len(duplicates_lists)):
+            # Текущая пара таблиц
+            list1 = duplicates_lists[i]
+            list2 = duplicates_lists[j]
 
+            # Найти пересечения по значению row[0]
+            intersection = []
+            for row1 in list1:
+                for row2 in list2:
+                    if row1[0] == row2[0]:  # Совпадение по row[0]
+                        # Сохраняем значение row1[0], row1[1], row1[2], row2[1], row2[2]
+                        intersection.append({
+                            'key': row1[0],
+                            'bid1': row1[1],
+                            'ask1': row1[2],
+                            'bid2': row2[1],
+                            'ask2': row2[2],
+                        })
 
-duplicates_lists = []
+            # Сохраняем результат для текущей пары таблиц
+            pairwise_results.append(((tables[i], tables[j]), intersection))
 
-for table_index, table in enumerate(tables_lists):
-    duplicates_lists.append([])
-    for row in table:
-        if row[0] in duplicates:
-            duplicates_lists[table_index].append(row)
-
-# Перебираем все пары списков
-pairwise_results = []
-
-# Перебираем все пары списков
-for i in range(len(duplicates_lists)):
-    for j in range(i + 1, len(duplicates_lists)):
-        # Текущая пара таблиц
-        list1 = duplicates_lists[i]
-        list2 = duplicates_lists[j]
-
-        # Найти пересечения по значению row[0]
-        intersection = []
-        for row1 in list1:
-            for row2 in list2:
-                if row1[0] == row2[0]:  # Совпадение по row[0]
-                    # Сохраняем значение row1[0], row1[1], row1[2], row2[1], row2[2]
-                    intersection.append({
-                        'key': row1[0],
-                        'bid1': row1[1],
-                        'ask1': row1[2],
-                        'bid2': row2[1],
-                        'ask2': row2[2],
-                    })
-
-        # Сохраняем результат для текущей пары таблиц
-        pairwise_results.append(((tables[i], tables[j]), intersection))
-
-
-
-print("Пересечения по парам таблиц:")
-for pair, intersection in pairwise_results:
-    print(f"Таблица {pair[0]} и Таблица {pair[1]}:")
-    for match in intersection:
-        if compare(float(match['bid1']), float(match['bid2']), float(match['ask1']), float(match['ask2']), min_spread, max_spread):
-            print(f'''tiker: {match['key']}, \n{pair[0]} Bid: {match['bid1']}, Ask: {match['ask1']}\n{pair[1]} Bid: {match['bid2']},  Ask: {match['ask2']}''')
-            print(f'''{links_for_pairs(pair[0], match['key'])} | {links_for_pairs(pair[1], match['key'])}\n''')
+    print("Пересечения по парам таблиц:")
+    for pair, intersection in pairwise_results:
+        print(f"Таблица {pair[0]} и Таблица {pair[1]}:")
+        for match in intersection:
+            if compare(float(match['bid1']), float(match['bid2']), float(match['ask1']), float(match['ask2']),
+                       min_spread, max_spread):
+                print(
+                    f'''tiker: {match['key']}, \n{pair[0]} Bid: {match['bid1']}, Ask: {match['ask1']}\n{pair[1]} Bid: {match['bid2']},  Ask: {match['ask2']}''')
+                print(f'''{links_for_pairs(pair[0], match['key'])} | {links_for_pairs(pair[1], match['key'])}\n''')
 
 
-
+if __name__ == '__main__':
+    compare_tables(load_tables_to_list(tables))
