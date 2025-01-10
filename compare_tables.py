@@ -108,5 +108,6 @@ def compare_tables(tables_lists):
                 print(f'''{links_for_pairs(pair[0], match['key'])} | {links_for_pairs(pair[1], match['key'])}\n''')
 
 
+
 if __name__ == '__main__':
     compare_tables(load_tables_to_list(tables))
