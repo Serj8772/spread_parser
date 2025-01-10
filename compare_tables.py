@@ -12,10 +12,10 @@ max_spread = 70
 
 def compare(bid1, ask1, bid2, ask2, min_spread, max_spread):
     if (ask2 - bid1) / ask2 * 100 > min_spread and (ask2 - bid1) / ask2 * 100 < max_spread:
-        print(f'процент1 ={(ask2 - bid1) / ask2 * 100}')
+        print(f'процент = {(ask2 - bid1) / ask2 * 100}')
         return True
     elif (ask1 - bid2) / ask1 * 100 > min_spread and (ask1 - bid2) / ask1 * 100 < max_spread:
-        print(f'процент2 ={(ask1 - bid2) / ask1 * 100}')
+        print(f'процент = {(ask1 - bid2) / ask1 * 100}')
         return True
     else:
         return False
@@ -96,14 +96,14 @@ def compare_tables(tables_lists):
             # Сохраняем результат для текущей пары таблиц
             pairwise_results.append(((tables[i], tables[j]), intersection))
 
-    print("Пересечения по парам таблиц:")
+    print("Найдены следующие спреды:")
     for pair, intersection in pairwise_results:
-        print(f"Таблица {pair[0]} и Таблица {pair[1]}:")
+        print(f"Таблица {pair[0].upper()} и Таблица {pair[1].upper()}:")
         for match in intersection:
             if compare(float(match['bid1']), float(match['bid2']), float(match['ask1']), float(match['ask2']),
                        min_spread, max_spread):
                 print(
-                    f'''tiker: {match['key']}, \n{pair[0]} Bid: {match['bid1']}, Ask: {match['ask1']}\n{pair[1]} Bid: {match['bid2']},  Ask: {match['ask2']}''')
+                    f'''tiker: {match['key']}, \n{pair[0].upper()} Bid: {match['bid1']}, Ask: {match['ask1']}\n{pair[1].upper()} Bid: {match['bid2']},  Ask: {match['ask2']}''')
                 print(f'''{links_for_pairs(pair[0], match['key'])} | {links_for_pairs(pair[1], match['key'])}\n''')
 
 
