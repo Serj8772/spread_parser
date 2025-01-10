@@ -21,4 +21,3 @@ def links_for_pairs(cex, pair_for_link):
     else:
         print('Ошибка названия биржи')
 
-# print(f'https://www.binance.com/en/trade/{i[0].replace("USD", "_USD")} https://www.gate.io/trade/{i[0].replace("USD", "_USD")}\n\n')
