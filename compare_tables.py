@@ -55,7 +55,6 @@ def compare_tables(tables_lists):
     for i in tables_lists:
         for pair in i:
             pairs.append(pair[0])
-    print(pairs)
 
     # ищем повторяющиеся пары и добавляем их в список дубликатов
     for item in pairs:
